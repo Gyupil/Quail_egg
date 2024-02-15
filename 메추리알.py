@@ -11,10 +11,10 @@ class Restaurant:
 
 
 class Menu:
-    def __init__(self, name, restaurant, allergic_info):
+    def __init__(self, name, allergic_info, selling_restaurant):
         self.name = name
-        self.restaurants = restaurant
         self.allergic_info = allergic_info
+        self.selling_restaurant = selling_restaurant
 
     def __repr__(self):
         return f'{self.name}'
@@ -34,7 +34,7 @@ restaurants = []
 restaurant_info = open("restaurant_info.txt", 'r+')
 for line in restaurant_info:
     info = line.split(', ')
-    restaurant = Restaurant(info[0], info[1], info[2], info[3])
+    restaurant = Restaurant(info[0], info[1], info[2], info[3], info[4])
     restaurants.append(restaurant)
 restaurant_info.close()
 
@@ -42,9 +42,15 @@ menus = []
 menu_info = open("menu_info.txt", 'r+')
 for line in menu_info:
     info = line.split()
-    menu = Menu(info[0], info[1], info[2])
+    menu = Menu(info[0], info[1])
     menus.append(menu)
 menu_info.close()
+
+total_info = {}
+for menu in menus:
+    for restaurant in restaurants:
+        if restaurant.restaurant_name == menu.selling_restaurant:
+            total_info[menu] = restaurant
 
 users = []
 user_info = open("user_info.txt", 'r+')
@@ -54,3 +60,13 @@ if user_info != "":
         user = User(info[0], info[1], info[2])
         users.append(user)
 user_info.close()
+
+
+def check_allergic(user_list, menu_dict):
+    for i in menu_dict.keys():
+        for j in user_list:
+            if i.allergic_info == j:
+                del menu_dict[i]
+
+
+print("Here are the restaurants:")
